@@ -27,9 +27,7 @@ jobs:
           uses: coturiv/setup-ionic@v1
     
         - name: 'Run Build'
-          run: |
-            ionic cap build ios --prod --no-open
-            cd ios/App
+          run: ionic cap build ios --prod --no-open && cd ios/App
           
         - name: 'Run deploy'
           run: fastlane deploy
