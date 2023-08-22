@@ -1,0 +1,42 @@
+on:
+    workflow_call:
+      
+  jobs:
+    deploy:
+      name: 'Build and deploy iOS'
+      runs-on: macos-latest
+        
+      environment:
+        name: ios
+  
+      steps:
+        - name: 'Checkout'
+          uses: actions/checkout@v3     
+  
+        - name: 'Using Node.js'
+          uses: actions/setup-node@v3
+          with:
+            node-version: 16.x
+            cache: 'npm'
+            cache-dependency-path: package-lock.json     
+
+        - name: 'run install'
+          run: npm ci
+
+        - name: 'Setup Ionic'
+          uses: coturiv/setup-ionic@v1
+
+        - name: 'Run Build'
+          run: |
+            ionic cap build ios --prod --no-open
+            cd ios/App
+          
+        - name: 'Run deploy'
+          run: fastlane deploy
+          env:
+              MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+              APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
+              APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
+              APPLE_KEY_CONTENT: ${{ secrets.APPLE_KEY_CONTENT }}
+              MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+          
