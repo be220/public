@@ -1,31 +1,31 @@
 on:
     workflow_call:
-      
-  jobs:
+  
+jobs:
     deploy:
       name: 'Build and deploy iOS'
       runs-on: macos-latest
         
       environment:
         name: ios
-  
+    
       steps:
         - name: 'Checkout'
           uses: actions/checkout@v3     
-  
+    
         - name: 'Using Node.js'
           uses: actions/setup-node@v3
           with:
             node-version: 16.x
             cache: 'npm'
             cache-dependency-path: package-lock.json     
-
+    
         - name: 'run install'
           run: npm ci
-
+    
         - name: 'Setup Ionic'
           uses: coturiv/setup-ionic@v1
-
+    
         - name: 'Run Build'
           run: |
             ionic cap build ios --prod --no-open
